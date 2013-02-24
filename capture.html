@@ -1,0 +1,50 @@
+<!doctype HTML>
+<html>
+<body>
+
+
+<video autoplay></video>
+
+<script>
+
+var video = document.querySelector('video');
+var localMediaStream4Img = null;
+
+var onFail = function(e){
+	console.log('Rejected: ', e);
+}
+
+// because of webkit prefix, this code work on Chrome only
+navigator.webkitGetUserMedia({video: true, audio: true}, 
+	function(localMediaStream){
+		video = document.querySelector('video');
+		video.src = window.URL.createObjectURL(localMediaStream);
+		localMediaStream4Img = localMediaStream;
+
+		video.onloadedmetadata = function(e){
+			console.log('meta data loaded: ', e);
+		};
+	}, onFail);
+
+</script>
+
+<canvas style="display:none;" width="640" height="480"></canvas>
+<img src="">
+
+<script>
+var canvas = document.querySelector('canvas');
+var ctx = canvas.getContext('2d');
+
+function snapshot(){
+	if(localMediaStream4Img){
+		ctx.drawImage(video, 0, 0);
+		document.querySelector('img').src = canvas.toDataURL('image/webp');
+	}
+}
+video.addEventListener('click', snapshot, false);
+</script>
+
+
+
+</body>
+</html>

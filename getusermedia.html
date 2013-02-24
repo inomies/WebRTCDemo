@@ -2,11 +2,9 @@
 <html>
 <body>
 
-
 <video autoplay></video>
 
 <script>
-
 var onFail = function(e){
 	console.log('Rejected: ', e);
 }
@@ -21,9 +19,7 @@ navigator.webkitGetUserMedia({video: true, audio: true},
 			console.log('meta data loaded: ', e);
 		};
 	}, onFail);
-
 </script>
-
 
 </body>
 </html>
