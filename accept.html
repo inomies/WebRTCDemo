@@ -11,6 +11,7 @@ var onFail = function(e){
 	console.log('Rejected: ', e);
 }
 
+// because of webkit prefix, this code work on Chrome only
 navigator.webkitGetUserMedia({video: true, audio: true}, 
 	function(localMediaStream){
 		var video = document.querySelector('video');
