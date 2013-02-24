@@ -1,0 +1,28 @@
+<!doctype HTML>
+<html>
+<body>
+
+
+<video autoplay></video>
+
+<script>
+
+var onFail = function(e){
+	console.log('Rejected: ', e);
+}
+
+navigator.webkitGetUserMedia({video: true, audio: true}, 
+	function(localMediaStream){
+		var video = document.querySelector('video');
+		video.src = window.URL.createObjectURL(localMediaStream);
+
+		video.onloadedmetadata = function(e){
+			console.log('meta data loaded: ', e);
+		};
+	}, onFail);
+
+</script>
+
+
+</body>
+</html>
