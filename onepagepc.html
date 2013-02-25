@@ -11,7 +11,6 @@
 <input type="button" value="Call" id="c" onClick="call()">
 
 <script>
-
 function start(){
 navigator.webkitGetUserMedia({video: true, audio: true},
 	function(mediaStream){
@@ -27,31 +26,33 @@ var onFail = function(e){
 var servers = null;
 
 var pc1 = new webkitRTCPeerConnection(servers);
+// onicecandidate is fired 
+// when new ICE candidate added to a previous offer or answer.
 pc1.onicecandidate = iceCallback1;
 
-var pc2 = new webkitRTCPeerConnection(servers);
-pc2.onicecandidate = iceCallback2;
-// onaddstream fires when setRemoteDescription is called
-pc2.onaddstream = gotRemoteStream;
-
-var vid1 = document.getElementById("vid1");
-var vid2 = document.getElementById("vid2");
-
-
-function gotRemoteStream(e){
-  vid2.src = window.URL.createObjectURL(e.stream);
-}
-
 function iceCallback1(e){
+	console.log("iceCallback1 is called");
 	if(e.candidate){
 		pc2.addIceCandidate(new RTCIceCandidate(e.candidate));
 	}
 }
 
+var pc2 = new webkitRTCPeerConnection(servers);
+pc2.onicecandidate = iceCallback2;
+// onaddstream is fired when setRemoteDescription is called
+pc2.onaddstream = gotRemoteStream;
+
 function iceCallback2(e){
 	if(e.candidate){
 		pc1.addIceCandidate(new RTCIceCandidate(e.candidate));
 	}
+}
+
+var vid1 = document.getElementById("vid1");
+var vid2 = document.getElementById("vid2");
+
+function gotRemoteStream(e){
+  vid2.src = window.URL.createObjectURL(e.stream);
 }
 
 function gotDescription2(desc){
@@ -66,6 +67,7 @@ function gotDescription1(desc){
 }
 
 function call(){
+	console.log("pc1 offer is created after this line");
 	pc1.createOffer(gotDescription1);
 }
 </script>
