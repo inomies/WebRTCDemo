@@ -33,6 +33,7 @@ pc1.onicecandidate = iceCallback1;
 function iceCallback1(e){
 	console.log("iceCallback1 is called");
 	if(e.candidate){
+		// 서버로부터 pc1의 candidate를 받음
 		pc2.addIceCandidate(new RTCIceCandidate(e.candidate));
 	}
 }
@@ -44,6 +45,7 @@ pc2.onaddstream = gotRemoteStream;
 
 function iceCallback2(e){
 	if(e.candidate){
+		// 서버로부터 pc2의 candidate를 받음
 		pc1.addIceCandidate(new RTCIceCandidate(e.candidate));
 	}
 }
@@ -57,11 +59,13 @@ function gotRemoteStream(e){
 
 function gotDescription2(desc){
 	pc2.setLocalDescription(desc);
+	// pc2에서 pc1으로 description을 전달
 	pc1.setRemoteDescription(desc);
 }
 
 function gotDescription1(desc){
 	pc1.setLocalDescription(desc);
+	// pc1에서 pc2로 description을 전달
 	pc2.setRemoteDescription(desc);
 	pc2.createAnswer(gotDescription2);
 }
