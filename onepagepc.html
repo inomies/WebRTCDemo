@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<video id="vid1" width="320" autoplay></video>
+<video id="vid2" width="320" autoplay></video>
+
+
+<br>
+<input type="button" value="Start" id="s" onClick="start()"> 
+<input type="button" value="Call" id="c" onClick="call()">
+
+<script>
+
+function start(){
+navigator.webkitGetUserMedia({video: true, audio: true},
+	function(mediaStream){
+		vid1.src = window.URL.createObjectURL(mediaStream);
+		pc1.addStream(mediaStream);
+	}, onFail);
+}
+
+var onFail = function(e){
+    console.log('Rejected: ', e);
+}
+
+var servers = null;
+
+var pc1 = new webkitRTCPeerConnection(servers);
+pc1.onicecandidate = iceCallback1;
+
+var pc2 = new webkitRTCPeerConnection(servers);
+pc2.onicecandidate = iceCallback2;
+// onaddstream fires when setRemoteDescription is called
+pc2.onaddstream = gotRemoteStream;
+
+var vid1 = document.getElementById("vid1");
+var vid2 = document.getElementById("vid2");
+
+
+function gotRemoteStream(e){
+  vid2.src = window.URL.createObjectURL(e.stream);
+}
+
+function iceCallback1(e){
+	if(e.candidate){
+		pc2.addIceCandidate(new RTCIceCandidate(e.candidate));
+	}
+}
+
+function iceCallback2(e){
+	if(e.candidate){
+		pc1.addIceCandidate(new RTCIceCandidate(e.candidate));
+	}
+}
+
+function gotDescription2(desc){
+	pc2.setLocalDescription(desc);
+	pc1.setRemoteDescription(desc);
+}
+
+function gotDescription1(desc){
+	pc1.setLocalDescription(desc);
+	pc2.setRemoteDescription(desc);
+	pc2.createAnswer(gotDescription2);
+}
+
+function call(){
+	pc1.createOffer(gotDescription1);
+}
+</script>
+
+</body>
+</html>
